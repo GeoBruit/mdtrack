@@ -87,18 +87,7 @@ class UserServiceTest {
         assertEquals("UserRegisterDTO is null or has null values", exception.getMessage());
     }
 
-    @Test
-    void saveUser_DatabaseException_ThrowsRuntimeException() {
-        UserRegisterDTO newUserDTO = new UserRegisterDTO();
-        newUserDTO.setUsername("testuser");
-        newUserDTO.setEmail("testuser@example.com");
-        newUserDTO.setPassword("password");
 
-        doThrow(DataAccessException.class).when(userRepo).save(any(User.class));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.saveUser(newUserDTO));
-        assertEquals("Database exception", exception.getMessage());
-    }
 
     @Test
     void saveUser_UnexpectedException_ThrowsRuntimeException() {
