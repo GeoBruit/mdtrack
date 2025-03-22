@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -40,14 +41,14 @@ public class User implements UserDetails {
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<MedicalDocument> medicalDocuments;
+    private List<MedicalDocument> medicalDocuments = new ArrayList<>();
 
 
-    @OneToMany(mappedBy = "patient")
-    private List<MedicalNote> patientNotes;  // All notes where this user is a patient
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    private List<MedicalNote> patientNotes = new ArrayList<>();  // All notes where this user is a patient
 
-    @OneToMany(mappedBy = "doctor")
-    private List<MedicalNote> doctorNotes;   //All notes where this user is a doctor
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
+    private List<MedicalNote> doctorNotes = new ArrayList<>();   //All notes where this user is a doctor
 
 
     /**
@@ -73,15 +74,29 @@ public class User implements UserDetails {
         return this.password;
     }
 
+    public void addDoctorNotes(MedicalNote medicalNote) {
+        this.doctorNotes.add(medicalNote);
+    }
+    public void addPatientNotes(MedicalNote medicalNote) {
+        this.patientNotes.add(medicalNote);
+    }
+
+
+    public void setUserRole(String... roles) {
+        for (String role : roles) {
+
+            this.userRole += role + AUTHORITY_DELIMITER;
+        }
+    }
 
     //Creating all the lists before the user is created.
-    @PrePersist
-    void createLists() {
-
-        this.patientNotes = new java.util.ArrayList<>();
-        this.doctorNotes = new java.util.ArrayList<>();
-        this.medicalDocuments = new java.util.ArrayList<>();
-
-    }
+//    @PrePersist
+//    void createLists() {
+//
+//        this.patientNotes = new java.util.ArrayList<>();
+//        this.doctorNotes = new java.util.ArrayList<>();
+//        this.medicalDocuments = new java.util.ArrayList<>();
+//
+//    }
 
 }
