@@ -135,6 +135,5 @@ public class UserServiceIntegrationTest {
 
         assertNotNull(medicalNotes);
 
-
     }
 }

@@ -28,5 +28,11 @@ public class MedicalDocument {
     @JoinColumn(name = "user_id")
     private User user;
 
+    //Set time and date the document was uploaded
+    @PrePersist
+    void onCreate() {
+        timeStamp = LocalDateTime.now();
+    }
+
 }
 
