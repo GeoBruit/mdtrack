@@ -85,7 +85,8 @@ public class User implements UserDetails {
     public void setUserRole(String... roles) {
         for (String role : roles) {
 
-            this.userRole += role + AUTHORITY_DELIMITER;
+               this.userRole += role + AUTHORITY_DELIMITER;
+
         }
     }
 

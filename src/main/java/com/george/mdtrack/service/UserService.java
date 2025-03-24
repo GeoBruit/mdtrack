@@ -8,6 +8,9 @@ import com.george.mdtrack.model.User;
 import com.george.mdtrack.repository.MedicalNoteRepo;
 import com.george.mdtrack.repository.UserRepo;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +20,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final static Logger logger = Logger.getLogger(UserService.class.getName());
     //PasswordEncoder to encode all the passwords before we are saving them to the database
@@ -98,7 +101,7 @@ public class UserService {
             throw new IllegalArgumentException("UserRegisterDTO is null or has null values");
 
         } catch (DataAccessException e) {
-            throw new RuntimeException("Database exception");
+            throw new RuntimeException("Database exception", e.getCause());
 
         } catch (RuntimeException e) {
             throw new RuntimeException("Unknown exception", e);
@@ -143,5 +146,10 @@ public class UserService {
      */
     private String hashPassword(String password){
         return passwordEncoder.encode(password);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepo.findByUsername(username);
     }
 }

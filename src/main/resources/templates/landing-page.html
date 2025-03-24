@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to MDTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body class="bg-white text-gray-800">
+
+<!-- Hero Section -->
+<section class="bg-yellow-50 py-20">
+    <div class="container mx-auto text-center px-4">
+        <h1 class="text-4xl md:text-5xl font-bold text-olive mb-4" data-aos="fade-up">Welcome to MDTracker</h1>
+        <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+            Your all-in-one solution for tracking and managing your medical history securely.
+        </p>
+        <div class="mt-8" data-aos="fade-up" data-aos-delay="200">
+            <a href="/register" class="bg-olive text-white px-6 py-3 rounded-lg shadow hover:bg-olive/90 transition">Get Started</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid md:grid-cols-3 gap-10">
+            <div data-aos="fade-up">
+                <img src="/images/history.png" alt="Medical History" class="w-full h-48 object-cover rounded-lg mb-4">
+                <h3 class="text-xl font-semibold text-olive mb-2">Track Your Medical History</h3>
+                <p class="text-gray-600">MDTracker allows you to organize your entire health journey in one place with timeline-based tracking and easy search.</p>
+            </div>
+            <div data-aos="fade-up" data-aos-delay="100">
+                <img src="/images/documents.png" alt="Upload Documents" class="w-full h-48 object-cover rounded-lg mb-4">
+                <h3 class="text-xl font-semibold text-olive mb-2">Upload & Share Medical Documents</h3>
+                <p class="text-gray-600">Securely upload, manage, and share medical files with your healthcare providers when you need them most.</p>
+            </div>
+            <div data-aos="fade-up" data-aos-delay="200">
+                <img src="/images/doctor-note.png" alt="Doctor Notes" class="w-full h-48 object-cover rounded-lg mb-4">
+                <h3 class="text-xl font-semibold text-olive mb-2">Doctor Notes After Visits</h3>
+                <p class="text-gray-600">Your doctor can leave visit summaries, observations, and instructions directly in your MDTracker account.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="bg-yellow-100 py-16">
+    <div class="container mx-auto text-center px-4" data-aos="fade-up">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">A Graded Unit Project</h2>
+        <p class="text-gray-700 max-w-2xl mx-auto">
+            MDTracker was built as part of a Graded Unit project to demonstrate full-stack development skills, user experience design, and secure application architecture.
+        </p>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-white border-t py-8">
+    <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+        <p class="text-gray-600 text-sm">&copy; 2025 MDTracker. All rights reserved.</p>
+        <div class="flex space-x-4 mt-4 md:mt-0">
+            <a href="https://www.linkedin.com/in/yourprofile" target="_blank" class="text-olive hover:underline">LinkedIn</a>
+            <a href="https://github.com/yourusername/mdtracker" target="_blank" class="text-olive hover:underline">GitHub</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    AOS.init();
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login | MDTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        olive: '#6b8e23',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-yellow-50 min-h-screen flex items-center justify-center p-4">
+
+<!-- Login Card -->
+<div class="relative w-full max-w-md bg-white/50 backdrop-blur-md rounded-2xl shadow-lg p-8 animate-fade-in">
+
+    <!-- Logo & App Title -->
+    <div class="text-center mb-6">
+        <img src="/images/logoo.png" alt="MDTracker Logo" class="w-16 mx-auto mb-2">
+        <h1 class="text-3xl font-bold text-olive">MDTracker</h1>
+        <p class="text-sm text-gray-600">Track and store your medical history securely</p>
+    </div>
+
+    <!-- Login Form -->
+    <form th:action="@{/login}" method="post" class="space-y-4">
+
+        <div>
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+            <input type="text" id="username" name="username" autocomplete="username"
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-olive" required>
+        </div>
+
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+            <input type="password" id="password" name="password" autocomplete="current-password"
+                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-olive" required>
+        </div>
+
+        <!-- Remember + Forgot -->
+        <div class="flex items-center justify-between text-sm text-gray-600">
+            <label class="inline-flex items-center">
+                <input type="checkbox" class="form-checkbox text-olive rounded" name="remember">
+                <span class="ml-2">Remember me</span>
+            </label>
+            <a href="/forgot-password" class="text-olive hover:underline">Forgot password?</a>
+        </div>
+
+        <!-- Login Button -->
+        <button type="submit"
+                class="w-full bg-gradient-to-r from-olive to-lime-500 text-white py-2 rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
+            🔐 Sign In
+        </button>
+    </form>
+
+    <!-- Register -->
+    <p class="text-sm text-center text-gray-700 mt-6">
+        Don’t have an account?
+        <a th:href="@{/register-form}" class="text-olive font-medium hover:underline">Register here</a>
+    </p>
+</div>
+
+<!-- Fade-in animation -->
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-out both;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+</body>
+</html>

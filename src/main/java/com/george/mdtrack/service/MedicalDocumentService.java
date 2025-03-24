@@ -16,22 +16,52 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service
 public class MedicalDocumentService {
 
-    private final MedicalNoteRepo medicalNoteRepo;
+
     private final UserRepo userRepo;
     private final MedicalDocumentRepo medicalDocumentRepo;
 
     @Value("${file.upload-dir}") //Root directory for the files to be store (declared in application.properties)
     private String medicalDocumentFolder;
 
-    public MedicalDocumentService(MedicalNoteRepo medicalNoteRepo, UserRepo userRepo, MedicalDocumentRepo medicalDocumentRepo) {
-        this.medicalNoteRepo = medicalNoteRepo;
+    public MedicalDocumentService(UserRepo userRepo, MedicalDocumentRepo medicalDocumentRepo) {
+
         this.userRepo = userRepo;
         this.medicalDocumentRepo = medicalDocumentRepo;
+    }
+
+
+    /**
+     * Retrieves all medical documents associated with a given user ID.
+     *
+     * @param userId the ID of the user whose medical documents are to be retrieved
+     * @return a list of medical documents associated with the specified user ID
+     * @throws IllegalArgumentException if no medical documents are found for the given user ID
+     */
+    public List<MedicalDocument> getAllMedicalDocumentsByUserId(Long userId){
+
+        List<MedicalDocument> medicalDocuments = medicalDocumentRepo.getByUserId(userId);
+        if(medicalDocuments.isEmpty()){
+            throw new IllegalArgumentException("No medical documents found for user with id " + userId);
+        }
+        return medicalDocuments;
+
+    }
+
+    /**
+     * Retrieves a medical document by its unique identifier.
+     *
+     * @param id the unique identifier of the medical document to retrieve
+     * @return the medical document associated with the specified id
+     * @throws IllegalArgumentException if no medical document with the specified id is found
+     */
+    public MedicalDocument getMedicalDocumentById(Long id){
+        return medicalDocumentRepo.findById(id).orElseThrow(() -> new IllegalArgumentException("Medical Document with id " + id + " not found"));
     }
 
     /**
@@ -119,7 +149,6 @@ public class MedicalDocumentService {
                 userFolder.toFile().mkdirs();
             }
 
-            //Create filepath to the uploaded file
 
             //File Path to be saved in the db
             return userFolder.resolve(fileName);
