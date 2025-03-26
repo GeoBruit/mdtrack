@@ -70,6 +70,16 @@ public class UserService implements UserDetailsService {
         return medicalNoteToBeReturned;
     }
 
+
+    public User getUserByUsername(String username){
+        try {
+            return userRepo.findByUsername(username);
+        }catch (Exception e){
+            throw new IllegalArgumentException("User with username " + username + " not found");
+        }
+    }
+
+
     /**
      * Retrieves a User based on the provided userId.
      *
@@ -133,9 +143,16 @@ public class UserService implements UserDetailsService {
             userToBeSaved.setEmail(userRegisterDTO.getEmail().toLowerCase());//setting the email to lower case
             //Encoding the password
             userToBeSaved.setPassword(hashPassword(userRegisterDTO.getPassword()));
-            userToBeSaved.setUserRole(UserRoles.USER_ROLE.toString(), UserRoles.PATIENT.toString());
+            userToBeSaved.setUserRole(assignUserRole());
             return userToBeSaved;
         }
+    }
+
+    //This function returns userRole as a string
+    //TODO this will have to be changed for a better approach
+    private String assignUserRole(){
+
+        return UserRoles.USER_ROLE.toString() + "," + UserRoles.PATIENT.toString();
     }
 
     /**

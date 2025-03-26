@@ -2,10 +2,16 @@ package com.george.mdtrack.controller;
 
 
 import com.george.mdtrack.dto.UserRegisterDTO;
+import com.george.mdtrack.model.MedicalNote;
+import com.george.mdtrack.model.User;
 import com.george.mdtrack.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -16,6 +22,7 @@ public class UserController {
     }
 
 
+
     @GetMapping("/")
     String landingPage() {
 
@@ -23,7 +30,14 @@ public class UserController {
     }
 
     @GetMapping("/home")
-    String index() {
+    String index(Model model){
+
+       String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+
+       User logedInUser = userService.getUserByUsername(userName);
+       List<MedicalNote> medicalNotes = userService.getMedicalNotesByUserId(logedInUser.getId());
+       model.addAttribute("username", logedInUser.getUsername());
+       model.addAttribute("medicalNotes", medicalNotes);
 
         return "index";
     }

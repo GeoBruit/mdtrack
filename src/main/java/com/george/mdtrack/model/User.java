@@ -82,13 +82,6 @@ public class User implements UserDetails {
     }
 
 
-    public void setUserRole(String... roles) {
-        for (String role : roles) {
-
-               this.userRole += role + AUTHORITY_DELIMITER;
-
-        }
-    }
 
     //Creating all the lists before the user is created.
 //    @PrePersist

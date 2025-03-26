@@ -8,6 +8,8 @@ import com.george.mdtrack.repository.UserRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MedicalNoteService {
 
@@ -20,6 +22,7 @@ public class MedicalNoteService {
         this.userRepo = userRepo;
         this.medicalNoteRepo = medicalNoteRepo;
     }
+
 
 
 
