@@ -17,7 +17,7 @@
     <!-- Navigation -->
     <nav class="flex-1 px-4 py-6 space-y-4 text-gray-700">
         <a href="/home" class="block py-2 px-3 rounded hover:bg-yellow-100">🏠 Home</a>
-        <a href="/documents" class="block py-2 px-3 rounded hover:bg-yellow-100">📄 Medical Documents</a>
+        <a th:href="@{/medical-documents}" class="block py-2 px-3 rounded hover:bg-yellow-100">📄 Medical Documents</a>
         <a href="/notes" class="block py-2 px-3 rounded hover:bg-yellow-100">📝 Medical Notes</a>
         <a href="/appointments" class="block py-2 px-3 rounded hover:bg-yellow-100">📅 Appointments</a>
         <form th:action="@{/logout}" method="post">

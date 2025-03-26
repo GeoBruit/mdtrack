@@ -4,78 +4,73 @@
     <meta charset="UTF-8">
     <title>Login | MDTracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        olive: '#6b8e23',
-                    }
-                }
-            }
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out both;
         }
-    </script>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
-<body class="bg-yellow-50 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
 
-<!-- Login Card -->
-<div class="relative w-full max-w-md bg-white/50 backdrop-blur-md rounded-2xl shadow-lg p-8 animate-fade-in">
+<!-- Login Card with Background Image -->
+<div class="relative w-full max-w-2xl bg-cover bg-center rounded-2xl shadow-xl overflow-hidden animate-fade-in"
+     style="background-image: url('/images/birds.png');">
 
-    <!-- Logo & App Title -->
-    <div class="text-center mb-6">
-        <img src="/images/logoo.png" alt="MDTracker Logo" class="w-16 mx-auto mb-2">
-        <h1 class="text-3xl font-bold text-olive">MDTracker</h1>
-        <p class="text-sm text-gray-600">Track and store your medical history securely</p>
+    <!-- Overlay for Readability -->
+    <div class="absolute inset-0 bg-white/80 backdrop-blur-sm"></div>
+
+    <!-- Login Content -->
+    <div class="relative z-10 p-10 md:p-14 flex flex-col items-center justify-center space-y-6">
+
+        <!-- Logo & App Title -->
+        <div class="text-center">
+            <img src="/images/logoo.png" alt="MDTracker Logo" class="w-16 mx-auto mb-2">
+            <h1 class="text-4xl font-bold text-blue-700">MDTracker</h1>
+            <p class="text-sm text-gray-600">Securely manage your medical history</p>
+        </div>
+
+        <!-- Login Form -->
+        <form th:action="@{/login}" method="post" class="w-full space-y-4 max-w-sm">
+
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <input type="text" id="username" name="username" autocomplete="username"
+                       class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input type="password" id="password" name="password" autocomplete="current-password"
+                       class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+
+            <!-- Remember + Forgot -->
+            <div class="flex items-center justify-between text-sm text-gray-600">
+                <label class="inline-flex items-center">
+                    <input type="checkbox" class="form-checkbox text-blue-600 rounded" name="remember">
+                    <span class="ml-2">Remember me</span>
+                </label>
+                <a href="/forgot-password" class="text-blue-600 hover:underline">Forgot password?</a>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md transition duration-300 shadow-md">
+                🔐 Sign In
+            </button>
+        </form>
+
+        <!-- Register -->
+        <p class="text-sm text-gray-700 mt-4">
+            Don’t have an account?
+            <a th:href="@{/register-form}" class="text-blue-600 font-medium hover:underline">Register here</a>
+        </p>
     </div>
-
-    <!-- Login Form -->
-    <form th:action="@{/login}" method="post" class="space-y-4">
-
-        <div>
-            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-            <input type="text" id="username" name="username" autocomplete="username"
-                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-olive" required>
-        </div>
-
-        <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input type="password" id="password" name="password" autocomplete="current-password"
-                   class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-olive" required>
-        </div>
-
-        <!-- Remember + Forgot -->
-        <div class="flex items-center justify-between text-sm text-gray-600">
-            <label class="inline-flex items-center">
-                <input type="checkbox" class="form-checkbox text-olive rounded" name="remember">
-                <span class="ml-2">Remember me</span>
-            </label>
-            <a href="/forgot-password" class="text-olive hover:underline">Forgot password?</a>
-        </div>
-
-        <!-- Login Button -->
-        <button type="submit"
-                class="w-full bg-gradient-to-r from-olive to-lime-500 text-white py-2 rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
-            🔐 Sign In
-        </button>
-    </form>
-
-    <!-- Register -->
-    <p class="text-sm text-center text-gray-700 mt-6">
-        Don’t have an account?
-        <a th:href="@{/register-form}" class="text-olive font-medium hover:underline">Register here</a>
-    </p>
 </div>
-
-<!-- Fade-in animation -->
-<style>
-    .animate-fade-in {
-        animation: fadeIn 0.6s ease-out both;
-    }
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-</style>
 
 </body>
 </html>

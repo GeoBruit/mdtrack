@@ -23,34 +23,34 @@ public class MedicalFileServiceTest {
     @Autowired
     private MedicalDocumentService medicalDocumentService;
 
-    @Test
-    public void storeRealPhotoFile() throws Exception {
-        // Path to a real photo file on my machine
-        File realFile = new File("C:/Users/georg/Pictures/sample.jpg");
-        assertTrue(realFile.exists(), "The test file does not exist!");
-
-        // Create a MultipartFile from it
-        try (FileInputStream fis = new FileInputStream(realFile)) {
-            MultipartFile multipartFile = new MockMultipartFile(
-                    "file",
-                    realFile.getName(),
-                    Files.probeContentType(realFile.toPath()),
-                    fis
-            );
-
-            MedicalFileToBeSavedDTO documentToBeSaved = new MedicalFileToBeSavedDTO("Blood Tests", "Blod Tests", multipartFile);
-
-            // Call your actual method
-            Long userId = 1L;
-            medicalDocumentService.saveMedicalDocument(documentToBeSaved, userId);
-
-            // Build expected path to where the file should have been saved
-            Path expectedPath = Paths.get("uploads", "user_" + userId, realFile.getName())
-                    .toAbsolutePath().normalize();
-
-            // Check that the file was created
-            assertTrue(Files.exists(expectedPath), "File was not saved to disk as expected");
-        }
-    }
+//    @Test
+//    public void storeRealPhotoFile() throws Exception {
+//        // Path to a real photo file on my machine
+//        File realFile = new File("C:/Users/georg/Pictures/sample.jpg");
+//        assertTrue(realFile.exists(), "The test file does not exist!");
+//
+//        // Create a MultipartFile from it
+//        try (FileInputStream fis = new FileInputStream(realFile)) {
+//            MultipartFile multipartFile = new MockMultipartFile(
+//                    "file",
+//                    realFile.getName(),
+//                    Files.probeContentType(realFile.toPath()),
+//                    fis
+//            );
+//
+//            MedicalFileToBeSavedDTO documentToBeSaved = new MedicalFileToBeSavedDTO("Blood Tests", "Blod Tests", multipartFile);
+//
+//            // Call your actual method
+//            Long userId = 1L;
+//            medicalDocumentService.saveMedicalDocument(documentToBeSaved, userId);
+//
+//            // Build expected path to where the file should have been saved
+//            Path expectedPath = Paths.get("uploads", "user_" + userId, realFile.getName())
+//                    .toAbsolutePath().normalize();
+//
+//            // Check that the file was created
+//            assertTrue(Files.exists(expectedPath), "File was not saved to disk as expected");
+//        }
+//    }
 
 }

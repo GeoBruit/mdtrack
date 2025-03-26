@@ -4,33 +4,72 @@
     <meta charset="UTF-8">
     <title>Home | MDTracker</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/js/script.js"></script>
 </head>
-<body class="bg-yellow-50 min-h-screen flex">
+<body class="bg-gray-100 min-h-screen flex"  th:attr="data-has-profile=${hasProfile}">
 
 <!-- Sidebar -->
-<div th:replace="fragments :: sidebar"></div>
+<div th:replace="~{fragments :: sidebar}"></div>
 
 <!-- Main Content -->
 <main class="flex-1 ml-64 p-6">
 
+    <!-- Profile Reminder Modal -->
+    <div id="profileModal" class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 hidden animate-fade-in">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 animate-slide-up">
+            <h2 class="text-2xl font-semibold text-blue-700 mb-2">👋 Just One More Step</h2>
+            <p class="text-gray-700 mb-4">
+                It looks like you haven’t set up your user profile yet. This helps MDTracker personalize your experience.
+            </p>
+            <div class="flex justify-end space-x-3">
+                <a href="/profile/setup" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Set Up Now
+                </a>
+                <button id="closeProfileModal" class="text-gray-600 hover:text-gray-900 px-4 py-2">
+                    Maybe Later
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional: quick styles for animation -->
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .animate-slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+    </style>
+
     <!-- Welcome Header -->
-    <div class="max-w-4xl mx-auto mb-8">
-        <h1 class="text-3xl font-bold text-olive mb-2">Hi <span th:text="${username}"></span> 👋</h1>
-        <p class="text-lg text-gray-700">Here are your latest medical notes:</p>
+    <div class="max-w-5xl mx-auto mb-10">
+        <h1 class="text-4xl font-bold text-blue-700 mb-2">Hi <span th:text="${username}"></span> 👋</h1>
+        <p class="text-lg text-gray-600">Here are your latest medical notes:</p>
     </div>
 
     <!-- Notes Section -->
-    <div class="max-w-4xl mx-auto grid gap-6">
+    <div class="max-w-5xl mx-auto grid gap-6">
         <div th:each="note : ${medicalNotes}"
-             class="bg-white rounded-xl shadow p-6 border border-gray-200">
+             class="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition duration-300">
             <div class="flex items-center justify-between mb-2">
-                <h2 class="text-xl font-semibold text-olive" th:text="${note.noteTitle}"></h2>
+                <h2 class="text-xl font-semibold text-blue-600" th:text="${note.noteTitle}"></h2>
                 <span class="text-sm text-gray-500" th:text="${#temporals.format(note.timeStamp, 'MMM d, yyyy HH:mm')}"></span>
             </div>
-            <p class="text-gray-800 whitespace-pre-line mb-4" th:text="${note.noteBody}"></p>
+            <p class="text-gray-700 whitespace-pre-line mb-4" th:text="${note.noteBody}"></p>
             <div class="text-sm text-gray-500">
                 <span>Written by: </span>
-                <span class="font-medium" th:text="${note.doctor.username}"></span>
+                <span class="font-medium text-gray-700" th:text="${note.doctor.username}"></span>
             </div>
         </div>
 

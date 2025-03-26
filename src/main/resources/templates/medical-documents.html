@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Documents | MDTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+<!-- Sidebar -->
+<div th:replace="fragments :: sidebar"></div>
+
+<!-- Main Content -->
+<main class="flex-1 ml-64 p-6">
+
+    <!-- Page Header -->
+    <div class="max-w-5xl mx-auto mb-6">
+        <h1 class="text-3xl font-bold text-blue-700 mb-4">Medical Documents</h1>
+
+        <!-- Upload Form -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Upload New Document</h2>
+            <form th:action="@{/medical-documents/upload}" method="post" enctype="multipart/form-data" th:object="${medicalFileToBeSaved}">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="fileName" class="block text-sm font-medium text-gray-700">Document Name</label>
+                        <input type="text" id="fileName" name="fileName" th:field="*{fileName}"
+                               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                               required>
+                    </div>
+
+                    <div>
+                        <label for="fileType" class="block text-sm font-medium text-gray-700">Document Type</label>
+                        <select id="fileType" name="fileType" th:field="*{fileType}"
+                                class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                required>
+                            <option value=""  selected>Select a type</option>
+                            <option value="Blood Test">Blood Test</option>
+                            <option value="X-Ray">X-Ray</option>
+                            <option value="MRI">MRI</option>
+                            <option value="Prescription">Prescription</option>
+                            <option value="Referral">Referral</option>
+                            <option value="Discharge Summary">Discharge Summary</option>
+                            <option value="Vaccination Record">Vaccination Record</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label for="multipartFile" class="block text-sm font-medium text-gray-700">Select File Only {pdf. jpeg. png.}</label>
+                        <input type="file" id="multipartFile" name="multipartFile"
+                               class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-md cursor-pointer focus:outline-none"
+                               required>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-md shadow hover:bg-blue-700 transition">
+                        Upload Document
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Documents Table -->
+    <div class="max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Your Documents</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded On</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                <tr th:each="document : ${medicalDocuments}">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" th:text="${document.fileName}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${document.fileType}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" th:text="${#temporals.format(document.timeStamp, 'MMM d, yyyy HH:mm')}"></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <a th:href="@{'/medical-documents/view/' + ${document.id}}" target="_blank" class="text-blue-600 hover:text-blue-900 mr-4">View</a>
+                        <a th:href="@{/medical-documents/download/{id}(id=${document.id})}" class="text-green-600 hover:text-green-900 mr-4">Download</a>
+                        <form th:action="@{/medical-documents/delete/{id}(id=${document.id})}" method="post" class="inline">
+                            <button type="submit" class="text-red-600 hover:text-red-900 bg-transparent border-none p-0 cursor-pointer">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(medicalDocuments)}">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" colspan="4">No medical documents found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

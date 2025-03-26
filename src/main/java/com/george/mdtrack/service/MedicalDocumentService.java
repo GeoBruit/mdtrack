@@ -6,6 +6,7 @@ import com.george.mdtrack.model.User;
 import com.george.mdtrack.repository.MedicalDocumentRepo;
 import com.george.mdtrack.repository.MedicalNoteRepo;
 import com.george.mdtrack.repository.UserRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -35,6 +36,11 @@ public class MedicalDocumentService {
         this.medicalDocumentRepo = medicalDocumentRepo;
     }
 
+
+    @Transactional
+    public void deleteMedicalDocument(Long id){
+        medicalDocumentRepo.deleteById(id);
+    }
 
     /**
      * Retrieves all medical documents associated with a given user ID.
@@ -79,25 +85,25 @@ public class MedicalDocumentService {
 
         try{
             //checking if the file is null
-            if(medicalFileToBeSavedDTO.file() == null){
+            if(medicalFileToBeSavedDTO.getMultipartFile() == null){
                 throw new IllegalArgumentException("File is null");
             }
 
             //Setting the file Path for the document
-            Path filePathToBeSavedInDataBase = createFilePath(medicalFileToBeSavedDTO.file(), userId);
+            Path filePathToBeSavedInDataBase = createFilePath(medicalFileToBeSavedDTO.getMultipartFile(), userId);
             //The user owning the file
             User user = userRepo.findById(userId).orElseThrow(() -> new IllegalArgumentException("User with id " + userId + " not found"));
 
             MedicalDocument documentToBeSaved = new MedicalDocument();
-            documentToBeSaved.setFileName(medicalFileToBeSavedDTO.fileName());
+            documentToBeSaved.setFileName(medicalFileToBeSavedDTO.getFileName());
             documentToBeSaved.setFilePath(filePathToBeSavedInDataBase.toString());
-            documentToBeSaved.setFileType(medicalFileToBeSavedDTO.fileType());
+            documentToBeSaved.setFileType(medicalFileToBeSavedDTO.getFileType());
             documentToBeSaved.setUser(user);
 
             //Saving the file to the DataBase
             medicalDocumentRepo.save(documentToBeSaved);
             //Saving the file to local storage
-            saveMedicalDocumentToLocalStorage(medicalFileToBeSavedDTO.file(), filePathToBeSavedInDataBase);
+            saveMedicalDocumentToLocalStorage(medicalFileToBeSavedDTO.getMultipartFile(), filePathToBeSavedInDataBase);
 
 
         }catch (Exception e){

@@ -39,6 +39,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String userRole;
 
+    @OneToOne(mappedBy ="user", cascade = CascadeType.ALL)
+    private UserProfile userProfile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<MedicalDocument> medicalDocuments = new ArrayList<>();
