@@ -5,7 +5,9 @@ import com.george.mdtrack.dto.UserRegisterDTO;
 import com.george.mdtrack.enums.UserRoles;
 import com.george.mdtrack.model.MedicalNote;
 import com.george.mdtrack.model.User;
+import com.george.mdtrack.model.UserProfile;
 import com.george.mdtrack.repository.MedicalNoteRepo;
+import com.george.mdtrack.repository.UserProfileRepo;
 import com.george.mdtrack.repository.UserRepo;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -28,14 +32,53 @@ public class UserService implements UserDetailsService {
     //This is how we access the database
     private final UserRepo userRepo;
     private final MedicalNoteRepo medicalNoteRepo;
+    private final UserProfileRepo  userProfileRepo;
 
 
     //Spring boot injects the dependency here
-    public UserService(UserRepo userRepo, MedicalNoteRepo medicalNoteRepo) {
+    public UserService(UserRepo userRepo, MedicalNoteRepo medicalNoteRepo, UserProfileRepo userProfileRepo) {
 
         this.userRepo = userRepo;
         this.medicalNoteRepo = medicalNoteRepo;
         this.passwordEncoder = new BCryptPasswordEncoder();
+        this.userProfileRepo = userProfileRepo;
+
+    }
+
+
+    public UserProfile getUserProfileByUserId(Long userId){
+
+        UserProfile userProfile = userProfileRepo.findByUserId(userId);
+        if(userProfile == null){
+            return new UserProfile();
+        }
+        return userProfile;
+    }
+
+    /**
+     * Saves the user profile for a specific user.
+     *
+     * @param userProfile the user profile object to be saved
+     * @param userId the unique identifier of the user for whom the profile is being saved
+     * @throws IllegalArgumentException if the user with the provided userId is not found
+     * @throws RuntimeException if there is an error saving the user profile to the database
+     */
+    public void saveUserProfile(UserProfile userProfile, Long userId){
+
+        try{
+            //User for whom we re saving the profile
+            User user = userRepo.findById(userId).orElseThrow(() -> new IllegalArgumentException("User with id " + userId + " not found"));
+            //Setting user profile for user and user for userProfile
+            user.setUserProfile(userProfile);
+            userProfile.setUser(user);
+            //Saving the profile to the db
+            userRepo.save(user);
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+
+            throw new RuntimeException("Error saving user profile to database");
+        }
 
     }
 
@@ -64,7 +107,8 @@ public class UserService implements UserDetailsService {
         }
         //checking if the medical note is empty
         if(medicalNoteToBeReturned.isEmpty()){
-            throw new IllegalArgumentException("No medical notes found for user with id " + userId);
+            //we are returning an empty list
+            return Collections.emptyList();
         }
         
         return medicalNoteToBeReturned;

@@ -22,7 +22,7 @@
                 It looks like you haven’t set up your user profile yet. This helps MDTracker personalize your experience.
             </p>
             <div class="flex justify-end space-x-3">
-                <a href="/profile/setup" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                <a th:href="@{/profile-form}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
                     Set Up Now
                 </a>
                 <button id="closeProfileModal" class="text-gray-600 hover:text-gray-900 px-4 py-2">
@@ -60,6 +60,7 @@
 
     <!-- Notes Section -->
     <div class="max-w-5xl mx-auto grid gap-6">
+
         <div th:each="note : ${medicalNotes}"
              class="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-lg transition duration-300">
             <div class="flex items-center justify-between mb-2">
@@ -77,6 +78,7 @@
             <p>No medical notes found. Stay healthy! 🩺</p>
         </div>
     </div>
+
 </main>
 
 </body>

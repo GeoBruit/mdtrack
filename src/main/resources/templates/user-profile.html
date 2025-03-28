@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile | MDTracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex">
+
+<!-- Sidebar -->
+<div th:replace="~{fragments :: sidebar}"></div>
+
+<!-- Main Content -->
+<main class="flex-1 ml-64 p-6">
+    <div class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-8">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-3xl font-bold text-blue-700 mb-1">👤 Your Profile</h1>
+                <p class="text-gray-600 text-sm">View your personal information</p>
+            </div>
+            <a th:href="@{/profile-form}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow transition">Edit Profile</a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <p class="text-sm text-gray-500">First Name</p>
+                <p class="text-lg font-medium text-gray-800" th:text="${userProfile.firstName}">John</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Last Name</p>
+                <p class="text-lg font-medium text-gray-800" th:text="${userProfile.lastName}">Doe</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Gender</p>
+                <p class="text-lg font-medium text-gray-800" th:text="${userProfile.gender}">Male</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500">Date of Birth</p>
+                <p class="text-lg font-medium text-gray-800" th:text="${#temporals.format(userProfile.dateOfBirth, 'dd MMM yyyy')}">1 Jan 1990</p>
+            </div>
+            <div class="md:col-span-2">
+                <p class="text-sm text-gray-500">Username</p>
+                <p class="text-lg font-medium text-gray-800" th:text="${userProfile.user.username}">johndoe</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>

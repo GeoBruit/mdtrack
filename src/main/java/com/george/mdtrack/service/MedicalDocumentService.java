@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -53,7 +54,8 @@ public class MedicalDocumentService {
 
         List<MedicalDocument> medicalDocuments = medicalDocumentRepo.getByUserId(userId);
         if(medicalDocuments.isEmpty()){
-            throw new IllegalArgumentException("No medical documents found for user with id " + userId);
+            //returning an empty list if the user has no medical documents
+            return Collections.emptyList();
         }
         return medicalDocuments;
 

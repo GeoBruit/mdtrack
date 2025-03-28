@@ -6,6 +6,7 @@ import com.george.mdtrack.dto.UserRegisterDTO;
 import com.george.mdtrack.model.MedicalDocument;
 import com.george.mdtrack.model.MedicalNote;
 import com.george.mdtrack.model.User;
+import com.george.mdtrack.model.UserProfile;
 import com.george.mdtrack.service.MedicalDocumentService;
 import com.george.mdtrack.service.UserService;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,33 @@ public class UserController {
         this.medicalDocumentService = medicalDocumentService;
     }
 
+    @GetMapping("/profile")
+    String showUserProfile(Model model, Principal principal) {
+
+        User loggedInUser = userService.getUserByUsername(principal.getName());
+        UserProfile userProfile = userService.getUserProfileByUserId(loggedInUser.getId());
+        model.addAttribute("userProfile", userProfile);
+        return "user-profile";
+    }
+
+    @GetMapping("/profile-form")
+    String profile(Model model) {
+
+        User loggedInUser = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        UserProfile userProfile = userService.getUserProfileByUserId(loggedInUser.getId());
+
+        model.addAttribute("userProfile", userProfile);
+        return "form/user-profile-form";
+    }
+
+    @PostMapping("/profile/save")
+    String saveProfile(@ModelAttribute UserProfile userProfile) {
+
+        User loggedInUser = userService.getUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+        userService.saveUserProfile(userProfile, loggedInUser.getId());
+
+        return "redirect:/home";
+    }
 
 
     @GetMapping("/")
@@ -63,6 +91,8 @@ public class UserController {
 
        User logedInUser = userService.getUserByUsername(userName);
        List<MedicalNote> medicalNotes = userService.getMedicalNotesByUserId(logedInUser.getId());
+
+       model.addAttribute("hasProfile", logedInUser.getUserProfile() != null);
        model.addAttribute("username", logedInUser.getUsername());
        model.addAttribute("medicalNotes", medicalNotes);
 

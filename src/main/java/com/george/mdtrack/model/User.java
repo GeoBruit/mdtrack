@@ -39,7 +39,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String userRole;
 
-    @OneToOne(mappedBy ="user", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_profile_id")
     private UserProfile userProfile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

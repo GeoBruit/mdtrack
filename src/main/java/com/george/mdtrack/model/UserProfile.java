@@ -22,8 +22,7 @@ public class UserProfile {
     private String gender;
     private LocalDate dateOfBirth;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    @OneToOne(mappedBy = "userProfile")
     private User user;
 
 }
