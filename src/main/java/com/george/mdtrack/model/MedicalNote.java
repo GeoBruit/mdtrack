@@ -28,6 +28,7 @@ public class MedicalNote {
     private User patient;
 
     private String noteTitle;
+    @Column(length = 4000)
     private String noteBody;
 
 
