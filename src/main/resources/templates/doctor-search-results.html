@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Search Results | MDTracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex">
+
+<!-- Sidebar -->
+<div th:replace="~{fragments :: sidebar(isDoctor=${isDoctor})}"></div>
+
+<!-- Main Content -->
+<main class="flex-1 ml-64 p-6">
+
+  <div class="max-w-4xl mx-auto mt-6">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4">Search Results</h2>
+
+    <div th:if="${searchResults != null}">
+      <div th:if="${searchResults.isEmpty()}" class="text-gray-500 text-sm p-4 border border-gray-200 rounded bg-white">
+        No matching patients found.
+      </div>
+
+      <div th:each="user : ${searchResults}"
+           class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition mb-4 text-sm">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-semibold text-blue-700"
+                th:text="${user.userProfile.firstName + ' ' + user.userProfile.lastName}">John Smith</h3>
+
+            <p class="text-gray-600 mt-1 leading-relaxed">
+              📧 <span th:text="${user.email}">john@example.com</span><br>
+              🎂 <span th:text="${#temporals.format(user.userProfile.dateOfBirth, 'MMM d, yyyy')}">Jan 1, 1990</span>
+            </p>
+          </div>
+
+          <a th:href="@{/profile/view/{id}(id=${user.id})}"
+             class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition text-sm whitespace-nowrap">
+            👤 View Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

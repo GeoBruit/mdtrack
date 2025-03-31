@@ -54,8 +54,8 @@ public class MedicalNoteService {
         //create medical to be saved
         MedicalNote medicalNote = new MedicalNote();
         //set the title and body
-        medicalNote.setNoteTitle(medicalNoteDTO.noteTitle());
-        medicalNote.setNoteBody(medicalNoteDTO.noteBody());
+        medicalNote.setNoteTitle(medicalNoteDTO.getNoteTitle());
+        medicalNote.setNoteBody(medicalNoteDTO.getNoteBody());
 
         return medicalNote;
 

@@ -52,7 +52,7 @@ public class MedicalDocumentService {
      */
     public List<MedicalDocument> getAllMedicalDocumentsByUserId(Long userId){
 
-        List<MedicalDocument> medicalDocuments = medicalDocumentRepo.getByUserId(userId);
+        List<MedicalDocument> medicalDocuments = medicalDocumentRepo.getByUserIdOrderByTimeStampDesc(userId);
         if(medicalDocuments.isEmpty()){
             //returning an empty list if the user has no medical documents
             return Collections.emptyList();

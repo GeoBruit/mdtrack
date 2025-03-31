@@ -1,5 +1,7 @@
 package com.george.mdtrack.dto;
 
+import lombok.*;
+
 /**
  * A Data Transfer Object (DTO) representing a medical note containing a title and body.
  * This class is immutable and uses the Java Record feature to encapsulate the properties.
@@ -10,6 +12,14 @@ package com.george.mdtrack.dto;
  * - noteTitle: The title of the medical note.
  * - noteBody: The body content of the medical note.
  */
-public record MedicalNoteDTO(String noteTitle,
-                             String noteBody) {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class MedicalNoteDTO {
+
+
+    private String noteTitle;
+    private String noteBody;
 }

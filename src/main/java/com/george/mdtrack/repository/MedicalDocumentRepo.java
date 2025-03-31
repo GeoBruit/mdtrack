@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface MedicalDocumentRepo extends JpaRepository<MedicalDocument, Long> {
 
-    List<MedicalDocument> getByUserId(Long userId);
+    List<MedicalDocument> getByUserIdOrderByTimeStampDesc(Long userId);
+
 }

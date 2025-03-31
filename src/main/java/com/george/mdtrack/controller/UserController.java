@@ -2,29 +2,81 @@ package com.george.mdtrack.controller;
 
 
 import com.george.mdtrack.dto.MedicalFileToBeSavedDTO;
+import com.george.mdtrack.dto.MedicalNoteDTO;
 import com.george.mdtrack.dto.UserRegisterDTO;
 import com.george.mdtrack.model.MedicalDocument;
 import com.george.mdtrack.model.MedicalNote;
 import com.george.mdtrack.model.User;
 import com.george.mdtrack.model.UserProfile;
 import com.george.mdtrack.service.MedicalDocumentService;
+import com.george.mdtrack.service.MedicalNoteService;
 import com.george.mdtrack.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class UserController {
 
+    private final MedicalNoteService medicalNoteService;
     UserService userService;
     MedicalDocumentService medicalDocumentService;
-    public UserController(UserService userService, MedicalDocumentService medicalDocumentService) {
+    public UserController(UserService userService, MedicalDocumentService medicalDocumentService, MedicalNoteService medicalNoteService) {
         this.userService = userService;
         this.medicalDocumentService = medicalDocumentService;
+        this.medicalNoteService = medicalNoteService;
+    }
+
+    @PostMapping("/notes/add/{id}")
+    public String addNote(@PathVariable String id, @ModelAttribute MedicalNoteDTO medicalNoteDTO) {
+
+        Long patientId = Long.parseLong(id);
+        Long loggedInUserId = getLoggedInUserId();
+        medicalNoteService.saveMedicalNote(loggedInUserId, patientId, medicalNoteDTO);
+
+        return "redirect:/profile/view/" + patientId;
+    }
+
+
+    @GetMapping("/profile/view/{id}")
+    public String profileView(Model model, @PathVariable Long id) {
+
+        User patient = userService.getUserByUserId(id);
+        List<MedicalDocument> patientDocuments = medicalDocumentService.getAllMedicalDocumentsByUserId(id);
+        List<MedicalNote> patientNotes = userService.getMedicalNotesByUserId(id);
+        MedicalNoteDTO medicalNoteDTO = new MedicalNoteDTO();
+
+        model.addAttribute("medicalNoteDTO", medicalNoteDTO);
+        model.addAttribute("patient", patient);
+        model.addAttribute("patientDocuments", patientDocuments);
+        model.addAttribute("patientNotes", patientNotes);
+        model.addAttribute("patientId", patient.getId());
+
+        return "profile-view";
+    }
+
+
+    @GetMapping("/doctor/search")
+    String doctorSearch(@RequestParam("query") String query, Model model) {
+
+
+        List<User> results = userService.searchPatients(query);
+        model.addAttribute("searchResults", results);
+        model.addAttribute("query", query);
+
+        // So we can re-render the sidebar properly
+        boolean isDoctor = checkIfUserIsDoctor();
+        model.addAttribute("isDoctor", isDoctor);
+
+
+
+        return "doctor-search-results";
     }
 
     @GetMapping("/profile")
@@ -92,6 +144,11 @@ public class UserController {
        User logedInUser = userService.getUserByUsername(userName);
        List<MedicalNote> medicalNotes = userService.getMedicalNotesByUserId(logedInUser.getId());
 
+       //Check if the user is a doctor
+        boolean isDoctor = checkIfUserIsDoctor();
+
+        model.addAttribute("isDoctor", isDoctor);
+
        model.addAttribute("hasProfile", logedInUser.getUserProfile() != null);
        model.addAttribute("username", logedInUser.getUsername());
        model.addAttribute("medicalNotes", medicalNotes);
@@ -118,5 +175,23 @@ public class UserController {
 
         userService.saveUser(userRegisterDTO);
         return "redirect:/login-form";
+    }
+
+
+    private Boolean checkIfUserIsDoctor() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        return authentication
+                .getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("DOCTOR"));
+
+    }
+
+    private Long getLoggedInUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User loggedInUser = userService.getUserByUsername(authentication.getName());
+        return loggedInUser.getId();
     }
 }

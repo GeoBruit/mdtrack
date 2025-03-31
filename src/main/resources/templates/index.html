@@ -8,9 +8,10 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex"  th:attr="data-has-profile=${hasProfile}">
 
-<!-- Sidebar -->
-<div th:replace="~{fragments :: sidebar}"></div>
 
+
+<!-- Sidebar -->
+<div th:replace="~{fragments :: sidebar(isDoctor=${isDoctor})}"></div>
 <!-- Main Content -->
 <main class="flex-1 ml-64 p-6">
 

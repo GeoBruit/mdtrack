@@ -46,6 +46,20 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public List<User> searchPatients(String query){
+
+        String[] tokens = query.trim().split("\\s+");
+
+        if (tokens.length == 2) {
+            // If query is something like "John Smith"
+            return userRepo.searchByFirstAndLastName(tokens[0], tokens[1]);
+        } else {
+            // If query is just "John" or "Smith"
+            return userRepo.searchByFirstOrLastName(query);
+        }
+
+    }
+
     public UserProfile getUserProfileByUserId(Long userId){
 
         UserProfile userProfile = userProfileRepo.findByUserId(userId);
@@ -100,10 +114,10 @@ public class UserService implements UserDetailsService {
         //Check if user is patient or doctor
         User user = userRepo.findById(userId).orElseThrow(() -> new IllegalArgumentException("User with id " + userId + " not found"));
         if (user.getUserRole().contains("DOCTOR")){
-            medicalNoteToBeReturned = medicalNoteRepo.findByDoctorId(userId);
+            medicalNoteToBeReturned = medicalNoteRepo.findByDoctorIdOrderByTimeStampDesc(userId);
         } else if ( user.getUserRole().contains("PATIENT")) {
             //Fetching all the medical notes that reference the patient id
-            medicalNoteToBeReturned = medicalNoteRepo.findByPatientId(userId);
+            medicalNoteToBeReturned = medicalNoteRepo.findByPatientIdOrderByTimeStampDesc(userId);
         }
         //checking if the medical note is empty
         if(medicalNoteToBeReturned.isEmpty()){
