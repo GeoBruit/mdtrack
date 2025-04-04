@@ -53,6 +53,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
     private List<MedicalNote> doctorNotes = new ArrayList<>();   //All notes where this user is a doctor
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
+    private SharedLink sharedLink;
 
     /**
      * Retrieves the collection of authorities granted to the user.

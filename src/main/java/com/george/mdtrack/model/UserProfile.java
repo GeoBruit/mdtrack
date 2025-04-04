@@ -23,6 +23,7 @@ public class UserProfile {
     private LocalDate dateOfBirth;
 
     @OneToOne(mappedBy = "userProfile")
+    @JoinColumn(name = "user_id")
     private User user;
 
 }

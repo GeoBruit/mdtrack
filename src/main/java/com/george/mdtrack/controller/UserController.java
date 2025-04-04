@@ -10,6 +10,7 @@ import com.george.mdtrack.model.User;
 import com.george.mdtrack.model.UserProfile;
 import com.george.mdtrack.service.MedicalDocumentService;
 import com.george.mdtrack.service.MedicalNoteService;
+import com.george.mdtrack.service.SharedLinkService;
 import com.george.mdtrack.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,10 +28,22 @@ public class UserController {
     private final MedicalNoteService medicalNoteService;
     UserService userService;
     MedicalDocumentService medicalDocumentService;
-    public UserController(UserService userService, MedicalDocumentService medicalDocumentService, MedicalNoteService medicalNoteService) {
+    SharedLinkService sharedLinkService;
+    public UserController(UserService userService, MedicalDocumentService medicalDocumentService,
+                          MedicalNoteService medicalNoteService, SharedLinkService sharedLinkService) {
         this.userService = userService;
         this.medicalDocumentService = medicalDocumentService;
         this.medicalNoteService = medicalNoteService;
+        this.sharedLinkService = sharedLinkService;
+    }
+
+    @GetMapping("/shared/link/create")
+    public String createLink() {
+
+        sharedLinkService.createSharedLink(getLoggedInUserId());
+        //TODO will redirect to a list of created shared links, this is for testing only
+        return "redirect:/home";
+
     }
 
     @PostMapping("/notes/add/{id}")
