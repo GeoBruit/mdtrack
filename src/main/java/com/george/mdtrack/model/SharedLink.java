@@ -20,16 +20,12 @@ public class SharedLink {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDateTime timestamp;
+    private LocalDateTime timeStamp;
 
     private String link;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     private User user;
-
-
-
-
 
 
 }

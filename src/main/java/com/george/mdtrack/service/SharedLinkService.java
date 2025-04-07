@@ -9,6 +9,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class SharedLinkService {
@@ -23,6 +26,18 @@ public class SharedLinkService {
     }
 
 
+
+    public List<SharedLink> getSharedLinks(Long userId) {
+
+        try{
+            return sharedLinkRepo.getByUserIdOrderByTimeStampDesc(userId);
+        }catch (Exception e){
+
+            throw new RuntimeException("Error getting shared links");
+        }
+
+    }
+
     public SharedLinkRepo createSharedLink(Long userId) {
 
         try{
@@ -30,8 +45,8 @@ public class SharedLinkService {
             SharedLink sharedLink = new SharedLink();
             sharedLink.setUser(userCreatingTheLink);
             //Setting the data and time the link was created
-            sharedLink.setTimestamp(LocalDateTime.now());
-            sharedLink.setLink(sharedLinkUrlBase + userCreatingTheLink.getId().toString() + "/" + sharedLink.getTimestamp());
+            sharedLink.setTimeStamp(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES));
+            sharedLink.setLink(sharedLinkUrlBase + userCreatingTheLink.getId().toString() + "/" + sharedLink.getTimeStamp());
             sharedLinkRepo.save(sharedLink);
 
             return sharedLinkRepo;

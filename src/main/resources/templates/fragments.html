@@ -17,11 +17,13 @@
     <!-- Navigation -->
     <nav class="flex-1 px-4 py-6 space-y-4 text-gray-700">
         <a href="/home" class="block py-2 px-3 rounded hover:bg-yellow-100">🏠 Home</a>
-        <a th:href="@{/medical-documents}" class="block py-2 px-3 rounded hover:bg-yellow-100">📄 Medical Documents</a>
-        <a href="/notes" class="block py-2 px-3 rounded hover:bg-yellow-100">📝 Medical Notes</a>
-        <a href="/appointments" class="block py-2 px-3 rounded hover:bg-yellow-100">📅 Appointments</a>
-        <a th:href="@{/profile}" class="block py-2 px-3 rounded hover:bg-yellow-100">🙍‍♂️ User Profile</a>
-        <a th:href="@{/shared/link/create}" class="block py-2 px-3 rounded hover:bg-yellow-100">🙍‍♂️ Generate Shared Link</a>
+        <a th:href="@{/medical-documents}" class="block py-2 px-3 rounded hover:bg-yellow-100">📂 Medical Documents</a>
+        <a th:href="@{/user/appointments}" class="block py-2 px-3 rounded hover:bg-yellow-100">📆 Appointments</a>
+        <a th:href="@{/profile}" class="block py-2 px-3 rounded hover:bg-yellow-100">🧑‍⚕️ User Profile</a>
+        <a th:href="@{/shared/link/create}" class="block py-2 px-3 rounded hover:bg-yellow-100">🔗 Generate Shared Link</a>
+        <a th:href="@{/user/shared/links}" class="block py-2 px-3 rounded hover:bg-yellow-100">🗂️ Shared Links</a>
+
+
 
         <!-- Doctor-only Search -->
         <div th:if="${isDoctor}" class="mt-4">

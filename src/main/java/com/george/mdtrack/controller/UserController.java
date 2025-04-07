@@ -4,10 +4,7 @@ package com.george.mdtrack.controller;
 import com.george.mdtrack.dto.MedicalFileToBeSavedDTO;
 import com.george.mdtrack.dto.MedicalNoteDTO;
 import com.george.mdtrack.dto.UserRegisterDTO;
-import com.george.mdtrack.model.MedicalDocument;
-import com.george.mdtrack.model.MedicalNote;
-import com.george.mdtrack.model.User;
-import com.george.mdtrack.model.UserProfile;
+import com.george.mdtrack.model.*;
 import com.george.mdtrack.service.MedicalDocumentService;
 import com.george.mdtrack.service.MedicalNoteService;
 import com.george.mdtrack.service.SharedLinkService;
@@ -19,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,12 +35,48 @@ public class UserController {
         this.sharedLinkService = sharedLinkService;
     }
 
+
+    @GetMapping("/user/appointments")
+    public String appointments() {
+
+        return "appointments";
+    }
+
+
+    @GetMapping("/user/shared/{id}/{timeStamp}")
+    public String accessSharedLink(@PathVariable Long id, @PathVariable LocalDateTime timeStamp, Model model) {
+
+        LocalDateTime now = LocalDateTime.now();
+
+        //Checking if the link has expired (was created more than 24 hrs ago)
+        if (now.isAfter(timeStamp.plusHours(24))) {
+            return "access-denied";
+        }
+
+        return "redirect:/profile/view/" + id;
+
+    }
+
     @GetMapping("/shared/link/create")
     public String createLink() {
 
         sharedLinkService.createSharedLink(getLoggedInUserId());
-        //TODO will redirect to a list of created shared links, this is for testing only
-        return "redirect:/home";
+
+
+
+        return "redirect:/user/shared/links";
+
+    }
+
+    @GetMapping("/user/shared/links")
+    String getSharedLinks(Model model) {
+
+        Long loggedInUserId = getLoggedInUserId();
+
+        List<SharedLink> userSharedLinks = sharedLinkService.getSharedLinks(loggedInUserId);
+        model.addAttribute("userSharedLinks", userSharedLinks);
+
+        return "shared-links";
 
     }
 
@@ -126,6 +160,9 @@ public class UserController {
 
         return "landing-page";
     }
+
+
+
 
     @GetMapping("/medical-documents")
     String medicalDocuments(Model model) {
