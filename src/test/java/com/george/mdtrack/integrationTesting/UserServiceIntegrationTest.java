@@ -36,8 +36,8 @@ public class UserServiceIntegrationTest {
 
         //Creating user dto to save to the database
         UserRegisterDTO newUserDTO = new UserRegisterDTO();
-        newUserDTO.setUsername("Patient");
-        newUserDTO.setEmail("patient@example.com");
+        newUserDTO.setUsername("Patientttt");
+        newUserDTO.setEmail("patiennnnt@example.com");
         newUserDTO.setPassword("password");
 
         User savedUser = userService.saveUser(newUserDTO);

@@ -9,7 +9,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/*
+ * Service class for handling medical notes in the system.
+ * It interacts with the UserRepo and MedicalNoteRepo to perform database operations.
+ */
 @Service
 public class MedicalNoteService {
 
@@ -17,7 +20,10 @@ public class MedicalNoteService {
     private final UserRepo userRepo;
     private final MedicalNoteRepo medicalNoteRepo;
 
-
+    /*
+     * Constructor for dependency injection of repositories.
+     * These repositories are used to access User and MedicalNote data.
+     */
     public MedicalNoteService(UserRepo userRepo, MedicalNoteRepo medicalNoteRepo) {
         this.userRepo = userRepo;
         this.medicalNoteRepo = medicalNoteRepo;
@@ -26,7 +32,14 @@ public class MedicalNoteService {
 
 
 
-
+    /*
+     * Saves a medical note to the database.
+     * This method is transactional, meaning all operations inside it will be executed atomically.
+     *
+     * @param doctorId       ID of the doctor writing the note
+     * @param patientId      ID of the patient receiving the note
+     * @param medicalNoteDTO Data transfer object containing note details
+     */
     @Transactional
     public void saveMedicalNote(Long doctorId, Long patientId, MedicalNoteDTO medicalNoteDTO){
         try{
@@ -50,6 +63,12 @@ public class MedicalNoteService {
         }
     }
 
+    /*
+     * Converts a MedicalNoteDTO into a MedicalNote entity.
+     *
+     * @param medicalNoteDTO DTO containing the title and body of the note
+     * @return A MedicalNote entity populated with the given data
+     */
     private MedicalNote parseMedicalNoteDTOToMedicalNoteEntity(MedicalNoteDTO medicalNoteDTO){
         //create medical to be saved
         MedicalNote medicalNote = new MedicalNote();

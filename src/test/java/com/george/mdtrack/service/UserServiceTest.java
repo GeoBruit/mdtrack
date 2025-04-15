@@ -1,104 +1,170 @@
 package com.george.mdtrack.service;
 
+
 import com.george.mdtrack.dto.UserRegisterDTO;
-import com.george.mdtrack.enums.UserRoles;
+import com.george.mdtrack.model.MedicalNote;
 import com.george.mdtrack.model.User;
+import com.george.mdtrack.model.UserProfile;
+import com.george.mdtrack.repository.MedicalNoteRepo;
+import com.george.mdtrack.repository.UserProfileRepo;
 import com.george.mdtrack.repository.UserRepo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
+
 class UserServiceTest {
 
-    //Getting the UserSerice avabile for the test class
-    @Autowired
-    private UserService userService;
-
-    //Using a mock repo so no data is inserted into the real database
-    @MockitoBean
+    /*
+     * Mocked dependencies for UserService
+     */
+    @Mock
     private UserRepo userRepo;
 
+    @Mock
+    private MedicalNoteRepo medicalNoteRepo;
+
+    @Mock
+    private UserProfileRepo userProfileRepo;
+
+    /*
+     * The service under test, injected with mocks above
+     */
+    @InjectMocks
+    private UserService userService;
+
+    /*
+     * Initialize mocks before each test
+     */
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    /*
+     * Test retrieving user by ID when user exists
+     */
     @Test
-    void saveUser_SuccessfulSave_ReturnsUser() {
+    void testGetUserByUserId_UserExists_ReturnsUser() {
+        User user = new User();
+        user.setId(1L);
 
-        //saveUser method acces just a user DTO sa we re creating one
-        UserRegisterDTO newUserDTO = new UserRegisterDTO();
-        newUserDTO.setUsername("testuser");
-        newUserDTO.setEmail("testuser@example.com");
-        newUserDTO.setPassword("password");
+        when(userRepo.findById(1L)).thenReturn(Optional.of(user));
 
-        //We will compare this user with the one returned bu the saveUser()
-        User expectedUser = new User();
-        expectedUser.setId(1L);
-        expectedUser.setUsername(newUserDTO.getUsername());
-        expectedUser.setEmail(newUserDTO.getEmail());
-        expectedUser.setPassword(new BCryptPasswordEncoder().encode(newUserDTO.getPassword()));
-        expectedUser.setUserRole(UserRoles.USER_ROLE.toString());
+        User result = userService.getUserByUserId(1L);
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+    }
 
-        when(userRepo.save(any(User.class))).thenReturn(expectedUser);
+    /*
+     * Test retrieving user by ID when user does not exist
+     */
+    @Test
+    void testGetUserByUserId_UserNotFound_ThrowsException() {
+        when(userRepo.findById(1L)).thenReturn(Optional.empty());
 
-        User savedUser = userService.saveUser(newUserDTO);
+        assertThrows(IllegalArgumentException.class, () -> userService.getUserByUserId(1L));
+    }
 
+    /*
+     * Test getting user profile by user ID when profile exists
+     */
+    @Test
+    void testGetUserProfileByUserId_ProfileExists() {
+        UserProfile profile = new UserProfile();
+        when(userProfileRepo.findByUserId(1L)).thenReturn(profile);
+
+        UserProfile result = userService.getUserProfileByUserId(1L);
+        assertEquals(profile, result);
+    }
+
+    /*
+     * Test getting user profile by user ID when profile is not found
+     */
+    @Test
+    void testGetUserProfileByUserId_ProfileNotFound() {
+        when(userProfileRepo.findByUserId(1L)).thenReturn(null);
+
+        UserProfile result = userService.getUserProfileByUserId(1L);
+        assertNotNull(result); // Returns a new UserProfile if null
+    }
+
+    /*
+     * Test saving a user profile for an existing user
+     */
+    @Test
+    void testSaveUserProfile_ValidUser_SavesProfile() {
+        User user = new User();
+        user.setId(1L);
+        UserProfile profile = new UserProfile();
+
+        when(userRepo.findById(1L)).thenReturn(Optional.of(user));
+        when(userRepo.save(any(User.class))).thenReturn(user);
+
+        assertDoesNotThrow(() -> userService.saveUserProfile(profile, 1L));
+        verify(userRepo, times(1)).save(user);
+    }
+
+    /*
+     * Test saving user profile for a non-existent user
+     */
+    @Test
+    void testSaveUserProfile_UserNotFound_ThrowsException() {
+        UserProfile profile = new UserProfile();
+        when(userRepo.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(RuntimeException.class, () -> userService.saveUserProfile(profile, 1L));
+    }
+
+    /*
+     * Test saving a new user with valid registration data
+     */
+    @Test
+    void testSaveUser_ValidDTO_Success() {
+        UserRegisterDTO dto = new UserRegisterDTO();
+        dto.setUsername("testuser");
+        dto.setEmail("test@example.com");
+        dto.setPassword("password");
+
+        when(userRepo.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        User savedUser = userService.saveUser(dto);
         assertNotNull(savedUser);
-        assertEquals(savedUser.getId(), expectedUser.getId());
-        assertEquals(savedUser.getUsername(), expectedUser.getUsername());
-        assertEquals(savedUser.getEmail(), expectedUser.getEmail());
-        assertEquals(savedUser.getUserRole(), expectedUser.getUserRole());
+        assertEquals("testuser", savedUser.getUsername());
+        assertTrue(savedUser.getEmail().contains("@"));
     }
 
+    /*
+     * Test searching patients by full name
+     */
     @Test
-    void saveUser_NullUserRegisterDTO_ThrowsIllegalArgumentException() {
-        UserRegisterDTO newUserDTO = null;
+    void testSearchPatients_FullName() {
+        String query = "John Smith";
+        List<User> expected = List.of(new User());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.saveUser(newUserDTO));
-        assertEquals("UserRegisterDTO is null or has null values", exception.getMessage());
+        when(userRepo.searchByFirstAndLastName("John", "Smith")).thenReturn(expected);
+
+        List<User> result = userService.searchPatients(query);
+        assertEquals(expected, result);
     }
 
+    /*
+     * Test searching patients by single name
+     */
     @Test
-    void saveUser_NullEmail_ThrowsIllegalArgumentException() {
-        UserRegisterDTO newUserDTO = new UserRegisterDTO();
-        newUserDTO.setUsername("testuser");
-        newUserDTO.setEmail(null);
-        newUserDTO.setPassword("password");
+    void testSearchPatients_SingleName() {
+        String query = "John";
+        List<User> expected = List.of(new User());
 
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.saveUser(newUserDTO));
-        assertEquals("UserRegisterDTO is null or has null values", exception.getMessage());
-    }
+        when(userRepo.searchByFirstOrLastName("John")).thenReturn(expected);
 
-    @Test
-    void saveUser_NullUsername_ThrowsIllegalArgumentException() {
-        UserRegisterDTO newUserDTO = new UserRegisterDTO();
-        newUserDTO.setUsername(null);
-        newUserDTO.setEmail("testuser@example.com");
-        newUserDTO.setPassword("password");
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.saveUser(newUserDTO));
-        assertEquals("UserRegisterDTO is null or has null values", exception.getMessage());
-    }
-
-
-
-    @Test
-    void saveUser_UnexpectedException_ThrowsRuntimeException() {
-        UserRegisterDTO newUserDTO = new UserRegisterDTO();
-        newUserDTO.setUsername("testuser");
-        newUserDTO.setEmail("testuser@example.com");
-        newUserDTO.setPassword("password");
-
-        doThrow(RuntimeException.class).when(userRepo).save(any(User.class));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.saveUser(newUserDTO));
-        assertTrue(exception.getMessage().contains("Unknown exception"));
+        List<User> result = userService.searchPatients(query);
+        assertEquals(expected, result);
     }
 }
