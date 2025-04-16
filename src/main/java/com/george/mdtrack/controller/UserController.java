@@ -20,6 +20,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Controller for handling all user-related operations including:
+ * - Profile view and update
+ * - Medical documents and notes
+ * - Shared links
+ * - Authentication views
+ */
 @Controller
 public class UserController {
 
@@ -35,14 +43,19 @@ public class UserController {
         this.sharedLinkService = sharedLinkService;
     }
 
-
+    /**
+     * Displays user's appointments page.
+     */
     @GetMapping("/user/appointments")
     public String appointments() {
 
         return "appointments";
     }
 
-
+    /**
+     * Handles access to shared profile link.
+     * Link is valid only for 24 hours from its timestamp.
+     */
     @GetMapping("/user/shared/{id}/{timeStamp}")
     public String accessSharedLink(@PathVariable Long id, @PathVariable LocalDateTime timeStamp, Model model) {
 
@@ -57,6 +70,9 @@ public class UserController {
 
     }
 
+    /**
+     * Creates a new shareable profile link for the logged-in user.
+     */
     @GetMapping("/shared/link/create")
     public String createLink() {
 
